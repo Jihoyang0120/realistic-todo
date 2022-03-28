@@ -76,7 +76,7 @@ const App: React.FC = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <AppContainer>
-        <Title>미루지 않기</Title>
+        <Title>오늘의 할 일</Title>
         <InputField todo={todo} setTodo={setTodo} handleCreate={handleCreate} />
         <TodoList
           todos={todos}

@@ -8,6 +8,7 @@ const Input = styled.form`
   position: relative;
   align-items: center;
   @media screen and (max-width: 700px) {
+    justify-content: center;
     width: 95%;
   } ;
 `;
