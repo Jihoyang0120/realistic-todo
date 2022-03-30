@@ -70,18 +70,18 @@ interface Props {
 }
 
 const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
-  const saveLocal = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
+  const saveTodos = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
   const handleDone = (id: number) => {
     let tempTodos = todos
     tempTodos = tempTodos.map((todo) => todo.id === id ? { ...todo, isDone: !todo.isDone } : todo)
-    saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+    saveTodos(tempTodos) // 로컬 스토리지에 tempTodos 저장
     setTodos(tempTodos);
   };
 
   const handleDelete = (id: number) => {
     // 원본 리스트(todos)를 tempTodos로 복사한 뒤 복사한 리스트를 적용.
     let tempTodos = todos.filter((todo) => todo.id !== id)
-    saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+    saveTodos(tempTodos) // 로컬 스토리지에 tempTodos 저장
     setTodos(tempTodos);
     window.location.reload();
   };
@@ -94,7 +94,7 @@ const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
 
     let tempTodos = todos
     tempTodos = tempTodos.map((todo) => (todo.id === id ? { ...todo, todo: editTodo } : todo))
-    saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+    saveTodos(tempTodos) // 로컬 스토리지에 tempTodos 저장
     setTodos(tempTodos);
     setEdit(false);
   };
