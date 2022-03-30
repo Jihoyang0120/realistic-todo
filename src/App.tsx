@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import InputField from "./components/InputField";
 import { Todo } from "./model";
@@ -30,15 +30,33 @@ const Title = styled.span`
 `;
 
 const App: React.FC = () => {
+  const saveLocal = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
+
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [delayedTodos, setDelayedTodos] = useState<Todo[]>([]);
+  const [delayedTodos, setDelayedTodos] = useState<Todo[]>([]); 
+
+  // Local storage에 저장되어있는 todoList를 불러와서 적용 
+  useEffect(() => {
+    let arr = localStorage.getItem("todoList");
+
+    if (arr) {
+      let obj = JSON.parse(arr);
+      setTodos(obj);
+    }
+  }, []);
+
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (todo) {
+      // 원본 리스트 todos를 tempList로 복사한 뒤 복사한 리스트를 적용
+      let tempTodos = todos;
       // id: random, todo: todo text, isDone: set false
-      setTodos([...todos, { id: Date.now(), todo: todo, isDone: false }]);
+      tempTodos.push({ id: Date.now(), todo: todo, isDone: false })
+      saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+      setTodos(tempTodos);
       setTodo("");
     }
   };

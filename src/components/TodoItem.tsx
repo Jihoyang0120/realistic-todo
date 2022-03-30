@@ -70,27 +70,32 @@ interface Props {
 }
 
 const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
+  const saveLocal = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
   const handleDone = (id: number) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, isDone: !todo.isDone } : todo
-      )
-    );
+    let tempTodos = todos
+    tempTodos = tempTodos.map((todo) => todo.id === id ? { ...todo, isDone: !todo.isDone } : todo)
+    saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+    setTodos(tempTodos);
   };
 
   const handleDelete = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    // 원본 리스트(todos)를 tempTodos로 복사한 뒤 복사한 리스트를 적용.
+    let tempTodos = todos.filter((todo) => todo.id !== id)
+    saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+    setTodos(tempTodos);
+    window.location.reload();
   };
 
   const [edit, setEdit] = useState<boolean>(false);
   const [editTodo, setEditTodo] = useState<string>(todo.todo);
   
-  // todo.id를 받아서 일치하는 todo를 editTodo로 변환(editing mode)
   const handleEdit = (e: React.FormEvent, id: number) => {
     e.preventDefault();
-    setTodos(
-      todos.map((todo) => (todo.id === id ? { ...todo, todo: editTodo } : todo))
-    );
+
+    let tempTodos = todos
+    tempTodos = tempTodos.map((todo) => (todo.id === id ? { ...todo, todo: editTodo } : todo))
+    saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+    setTodos(tempTodos);
     setEdit(false);
   };
 

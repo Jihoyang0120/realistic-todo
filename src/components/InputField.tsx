@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { AiOutlineCarryOut } from "react-icons/ai";
 
@@ -56,6 +56,10 @@ const InputSubmit = styled.button`
     transform: scale(0.8);
     box-shadow: 0 0 5px black;
     transition: 0.5s;
+
+    @media screen and (max-width: 700px) {
+      font-size: 90px;
+  } ;
   }
 `;
 
@@ -72,8 +76,7 @@ const InputField = ({ todo, setTodo, handleCreate }: Props) => {
   return (
     // Create task -> ease focus
     <Input
-      className="input"
-      onSubmit={(e) => {
+        onSubmit={(e) => {
         handleCreate(e);
         inputRef.current?.blur();
       }}
@@ -81,12 +84,11 @@ const InputField = ({ todo, setTodo, handleCreate }: Props) => {
       <InputBox
         type="input"
         placeholder="Enter a task"
-        className="input-box"
         value={todo}
         onChange={(e) => setTodo(e.target.value)}
         ref={inputRef}
       />
-      <InputSubmit className='"input-submit' type="submit">
+      <InputSubmit type="submit">
         <AiOutlineCarryOut />
       </InputSubmit>
     </Input>
