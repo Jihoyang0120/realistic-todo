@@ -31,10 +31,19 @@ const Title = styled.span`
 
 const App: React.FC = () => {
   const saveLocal = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
+/*
+  const warningShowUp = () => {$(function(){
+    $(function(){
+    // animation-play-state: running 속성 적용
+      $('.up').css('animation-play-state','paused');
+    });
+  });}
 
+*/
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [delayedTodos, setDelayedTodos] = useState<Todo[]>([]); 
+
 
   // Local storage에 저장되어있는 todoList를 불러와서 적용 
   useEffect(() => {
@@ -76,15 +85,19 @@ const App: React.FC = () => {
     if (source.droppableId === "TodoList") {
       add = active[source.index];
       active.splice(source.index, 1);
+      console.log("오늘 할 일 ->")
     } else {
       add = complete[source.index];
       complete.splice(source.index, 1);
+      console.log("내일 할 일 ->")
     }
 
     if (destination.droppableId === "TodoList") {
       active.splice(destination.index, 0, add);
+      console.log(" -> 오늘 할 일")
     } else {
       complete.splice(destination.index, 0, add);
+      console.log("-> 내일 할 일")
     }
 
     setDelayedTodos(complete);
@@ -102,6 +115,7 @@ const App: React.FC = () => {
           delayedTodos={delayedTodos}
           setDelayedTodos={setDelayedTodos}
         />
+        <div className="up">box</div>
       </AppContainer>
     </DragDropContext>
   );

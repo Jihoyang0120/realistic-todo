@@ -23,6 +23,7 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   @media screen and (max-width: 700px) {
+    justify-content: center;
     width: 95%;
     flex-direction: column;
   }
