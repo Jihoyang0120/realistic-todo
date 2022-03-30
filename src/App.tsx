@@ -30,16 +30,8 @@ const Title = styled.span`
 `;
 
 const App: React.FC = () => {
-  const saveLocal = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
-/*
-  const warningShowUp = () => {$(function(){
-    $(function(){
-    // animation-play-state: running 속성 적용
-      $('.up').css('animation-play-state','paused');
-    });
-  });}
-
-*/
+  const saveTodos = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
+  const savedelayedTodos = (list:Todo[]) =>  localStorage.setItem("delayedTodoList", JSON.stringify(list)) 
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
   const [delayedTodos, setDelayedTodos] = useState<Todo[]>([]); 
@@ -48,10 +40,15 @@ const App: React.FC = () => {
   // Local storage에 저장되어있는 todoList를 불러와서 적용 
   useEffect(() => {
     let arr = localStorage.getItem("todoList");
+    let delayedArr = localStorage.getItem("delayedTodoList");
 
     if (arr) {
       let obj = JSON.parse(arr);
       setTodos(obj);
+    }
+    if (delayedArr) {
+      let obj = JSON.parse(delayedArr);
+      setDelayedTodos (obj);
     }
   }, []);
 
@@ -63,8 +60,8 @@ const App: React.FC = () => {
       // 원본 리스트 todos를 tempList로 복사한 뒤 복사한 리스트를 적용
       let tempTodos = todos;
       // id: random, todo: todo text, isDone: set false
-      tempTodos.push({ id: Date.now(), todo: todo, isDone: false })
-      saveLocal(tempTodos) // 로컬 스토리지에 tempTodos 저장
+      tempTodos.push({ id: Date.now(), todo: todo, isDone: false})
+      saveTodos(tempTodos) // 로컬 스토리지에 tempTodos 저장
       setTodos(tempTodos);
       setTodo("");
     }
@@ -100,6 +97,8 @@ const App: React.FC = () => {
       console.log("-> 내일 할 일")
     }
 
+    saveTodos(active)
+    savedelayedTodos(complete)
     setDelayedTodos(complete);
     setTodos(active);
   };
@@ -115,7 +114,6 @@ const App: React.FC = () => {
           delayedTodos={delayedTodos}
           setDelayedTodos={setDelayedTodos}
         />
-        <div className="up">box</div>
       </AppContainer>
     </DragDropContext>
   );
