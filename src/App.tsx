@@ -5,6 +5,7 @@ import { Todo } from "./model";
 import TodoList from "./components/TodoList";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import styled from "styled-components";
+import { SwalCheer, SwalBuzyTmr} from "./components/SwalTemplate";
 
 const AppContainer = styled.div`
   width: 100vw;
@@ -31,7 +32,8 @@ const Title = styled.span`
 
 const App: React.FC = () => {
   const saveTodos = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
-  const saveDelayedTodos= (list:Todo[]) =>  localStorage.setItem("delayedTodoList", JSON.stringify(list)) 
+
+  const savedelayedTodos = (list:Todo[]) =>  localStorage.setItem("delayedTodoList", JSON.stringify(list)) 
 
   const [todo, setTodo] = useState<string>("");
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -49,6 +51,7 @@ const App: React.FC = () => {
     }
     if (delayedArr) {
       let obj = JSON.parse(delayedArr);
+
       setDelayedTodos(obj);
     }
   }, []);
@@ -61,7 +64,9 @@ const App: React.FC = () => {
       // 원본 리스트 todos를 tempList로 복사한 뒤 복사한 리스트를 적용
       let tempTodos = todos;
       // id: random, todo: todo text, isDone: set false
-      tempTodos.push({ id: Date.now(), todo: todo, isDone: false, isDelayed: false })
+
+      tempTodos.push({ id: Date.now(), todo: todo, isDone: false})
+
       saveTodos(tempTodos) // 로컬 스토리지에 tempTodos 저장
       setTodos(tempTodos);
       setTodo("");
@@ -78,15 +83,17 @@ const App: React.FC = () => {
       return;
     let add;
     let active = todos;
-    let complete = delayedTodos;
+    let delayed = delayedTodos;
+    let startFromToday = false;
 
     if (source.droppableId === "TodoList") {
       add = active[source.index];
       active.splice(source.index, 1);
       console.log("오늘 할 일 ->")
+      startFromToday = true
     } else {
-      add = complete[source.index];
-      complete.splice(source.index, 1);
+      add = delayed[source.index];
+      delayed.splice(source.index, 1);
       console.log("내일 할 일 ->")
     }
 
@@ -95,14 +102,26 @@ const App: React.FC = () => {
       active.splice(destination.index, 0, add);
       console.log(" -> 오늘 할 일")
     } else {
-      add.isDelayed = true
-      complete.splice(destination.index, 0, add);
+      delayed.splice(destination.index, 0, add);
+
       console.log("-> 내일 할 일")
+    
+    /* 
+    1. startFromToday로 옮겨진 todo가 '오늘 할 일'에서 옮겨졌는지 확인.
+    2. delayed된 todo가 1개 일시, SwalCheer Fire.
+    3. delayed된 todo가 3개 이상이면, SwalBuzyTmr Fire.
+    */
+      if (startFromToday){
+        if (delayed.length === 1) { SwalCheer() }
+        if (3 < delayed.length){ 
+          SwalBuzyTmr() }
+      }
     }
 
-    saveDelayedTodos(complete)// 로컬스토리지에 delayedTodos 저장
-    saveTodos(active)
-    setDelayedTodos(complete); // 로컬스토리지에 Todos 저장
+
+    saveTodos(active) // 로컬스토리지에 Todos 저장
+    savedelayedTodos(delayed) // 로컬스토리지에 delayedTodos 저장
+    setDelayedTodos(delayed); 
     setTodos(active);
   };
 
@@ -116,6 +135,7 @@ const App: React.FC = () => {
           setTodos={setTodos}
           delayedTodos={delayedTodos}
           setDelayedTodos={setDelayedTodos}
+
         />
       </AppContainer>
     </DragDropContext>

@@ -71,6 +71,7 @@ interface Props {
 
 const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
   const saveTodos = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
+
   const handleDone = (id: number) => {
     let tempTodos = todos
     tempTodos = tempTodos.map((todo) => todo.id === id ? { ...todo, isDone: !todo.isDone } : todo)
@@ -83,7 +84,7 @@ const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
     let tempTodos = todos.filter((todo) => todo.id !== id)
     saveTodos(tempTodos) // 로컬 스토리지에 tempTodos 저장
     setTodos(tempTodos);
-    window.location.reload();
+    
   };
 
   const [edit, setEdit] = useState<boolean>(false);
@@ -99,7 +100,7 @@ const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
     setEdit(false);
   };
 
-  // edit icon click -> focus on editTodo
+  // Edit 아이콘을 클릭하면 -> Edit input란에 자동으로 포커스
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     inputRef.current?.focus();
