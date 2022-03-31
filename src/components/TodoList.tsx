@@ -52,6 +52,7 @@ interface Props {
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   delayedTodos: Todo[];
   setDelayedTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+
 }
 
 const TodoList = ({
@@ -59,6 +60,7 @@ const TodoList = ({
   setTodos,
   delayedTodos,
   setDelayedTodos,
+
 }: Props) => {
   return (
     <Container>

@@ -5,6 +5,7 @@ import { Todo } from "./model";
 import TodoList from "./components/TodoList";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import styled from "styled-components";
+import { SwalCheer, SwalBuzyTmr} from "./components/SwalTemplate";
 
 const AppContainer = styled.div`
   width: 100vw;
@@ -77,15 +78,17 @@ const App: React.FC = () => {
       return;
     let add;
     let active = todos;
-    let complete = delayedTodos;
+    let delayed = delayedTodos;
+    let startFromToday = false;
 
     if (source.droppableId === "TodoList") {
       add = active[source.index];
       active.splice(source.index, 1);
       console.log("오늘 할 일 ->")
+      startFromToday = true
     } else {
-      add = complete[source.index];
-      complete.splice(source.index, 1);
+      add = delayed[source.index];
+      delayed.splice(source.index, 1);
       console.log("내일 할 일 ->")
     }
 
@@ -93,13 +96,24 @@ const App: React.FC = () => {
       active.splice(destination.index, 0, add);
       console.log(" -> 오늘 할 일")
     } else {
-      complete.splice(destination.index, 0, add);
+      delayed.splice(destination.index, 0, add);
       console.log("-> 내일 할 일")
+    
+    /* 
+    1. startFromToday로 옮겨진 todo가 '오늘 할 일'에서 옮겨졌는지 확인.
+    2. delayed된 todo가 1개 일시, SwalCheer Fire.
+    3. delayed된 todo가 3개 이상이면, SwalBuzyTmr Fire.
+    */
+      if (startFromToday){
+        if (delayed.length === 1) { SwalCheer() }
+        if (3 < delayed.length){ 
+          SwalBuzyTmr() }
+      }
     }
 
     saveTodos(active)
-    savedelayedTodos(complete)
-    setDelayedTodos(complete);
+    savedelayedTodos(delayed)
+    setDelayedTodos(delayed);
     setTodos(active);
   };
 
@@ -113,6 +127,7 @@ const App: React.FC = () => {
           setTodos={setTodos}
           delayedTodos={delayedTodos}
           setDelayedTodos={setDelayedTodos}
+
         />
       </AppContainer>
     </DragDropContext>
