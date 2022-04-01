@@ -71,7 +71,7 @@ interface Props {
 
 const TodoItem = ({ index, todo, todos, setTodos }: Props) => {
   const saveTodos = (list:Todo[]) =>  localStorage.setItem("todoList", JSON.stringify(list)) 
-  
+
   const handleDone = (id: number) => {
     let tempTodos = todos
     tempTodos = tempTodos.map((todo) => todo.id === id ? { ...todo, isDone: !todo.isDone } : todo)
