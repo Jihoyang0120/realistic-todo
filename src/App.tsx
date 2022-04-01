@@ -84,13 +84,13 @@ const App: React.FC = () => {
     let add;
     let active = todos;
     let delayed = delayedTodos;
-    let startFromToday = false;
+    let startFromToday = 0;
 
     if (source.droppableId === "TodoList") {
       add = active[source.index];
       active.splice(source.index, 1);
       console.log("오늘 할 일 ->")
-      startFromToday = true
+      startFromToday =+ 1
     } else {
       add = delayed[source.index];
       delayed.splice(source.index, 1);
@@ -105,6 +105,7 @@ const App: React.FC = () => {
       delayed.splice(destination.index, 0, add);
 
       console.log("-> 내일 할 일")
+      startFromToday =+ 1
     
     /* 
     1. startFromToday로 옮겨진 todo가 '오늘 할 일'에서 옮겨졌는지 확인.
